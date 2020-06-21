@@ -1,1 +1,242 @@
+/*
+Project: Lab 9
+Purpose Details: Pizza ordering application
+Course: IST 242
+Author: Gregg Sywulak
+Date Developed: 6/14/2020
+Last Date Changed:
+Rev:
+ */
 
+package edu.psu.ist242;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    int cCount = 1;
+
+    public static void main(String[] args) {
+
+        double subTotal;
+        double orderTotal = 0;
+
+
+
+        Main main = new Main();
+
+        final char EXIT_CODE = 'E';
+        final char CUST_CODE = 'C';
+        final char MENU_CODE = 'M';
+        final char ORDER_CODE = 'O';
+        final char TRAN_CODE = 'T';
+        final char CUST_PRNT = 'P';
+        final char HELP_CODE = '?';
+        char userAction;
+
+
+        ArrayList<Customer> cList = new ArrayList<>();
+
+
+
+
+
+
+
+
+        ArrayList<Menu> mList = new ArrayList<>();
+
+
+        Menu menu1 = new Menu(1, "Plain", 11.99);
+        mList.add(menu1);
+
+        Menu menu2 = new Menu(2, "Meat Lovers", 12.99);
+        mList.add(menu2);
+
+        Menu menu3 = new Menu(3, "Extra Cheese", 14.99);
+        mList.add(menu3);
+
+        Menu menu4 = new Menu(4, "Veggie", 13.99);
+        mList.add(menu4);
+
+
+
+
+
+        ArrayList<Order> oList = new ArrayList<>();
+
+
+        Order order1 = new Order(1);
+        oList.add(order1);
+
+
+
+        ArrayList<Transaction> tList = new ArrayList<>();
+
+
+
+
+
+        System.out.println("----------------------------------------------------------------------");
+        System.out.println("                                                                      ");
+        System.out.println("                  Welcome to Gregg's Pizza Shop                       ");
+        System.out.println("                                                                      ");
+        System.out.println("----------------------------------------------------------------------");
+
+        final String PROMPT_ACTION = "\nMAIN MENU: \nC - Add Customer\nP - Print Customers\nM - See Menu\nO - Place an Order\nT - List Transaction\nE - Exit\n ";
+
+        userAction = getAction(PROMPT_ACTION);
+
+        while (userAction != EXIT_CODE) {
+            switch (userAction) {
+                case CUST_CODE:
+                    cList.add(main.addCustomer());
+                    System.out.println(" ");
+                    System.out.println("-- Customer saved. Please choose next option. --");
+                    break;
+                case CUST_PRNT:
+                    System.out.println("------------------------------------------------");
+                    System.out.println("                Gregg's Pizza Shop              ");
+                    System.out.println("                 -- CUSTOMERS --                ");
+                    System.out.println("------------------------------------------------");
+                    System.out.printf("%-10s | %-12s | %-10s\n", "ID", "Name", "Phone Number");
+                    Customer.printCustomer(cList);
+                    break;
+                case MENU_CODE:
+                    System.out.println("------------------------");
+                    System.out.println("     Pizza Shop Menu    ");
+                    System.out.println("------------------------");
+                    System.out.printf("%-1s | %-12s | %-12s\n", "ID", "Item", "Price");
+
+                    menu1.printMenuInfo();
+                    menu2.printMenuInfo();
+                    menu3.printMenuInfo();
+                    menu4.printMenuInfo();
+                    break;
+                case ORDER_CODE:
+                    Order ord = new Order();
+                    System.out.println("-------------------------------------------");
+                    System.out.println("             Gregg's Pizza Shop            ");
+                    System.out.println("               -- ORDERING --              ");
+                    System.out.println("-------------------------------------------");
+                    System.out.println("Note: To keep adding more items select 'O'\nWhen finished select 'E' ");
+                    System.out.println(" ");
+                    String userInput = "O - Order\nE - Exit ";
+                    userAction = getAction(userInput);
+                    while (userAction != 'E') {
+                        Scanner input = new Scanner(System.in);
+                        System.out.printf("%-1s | %-12s | %-12s\n", "ID", "Item", "Price");
+                        menu1.printMenuInfo();
+                        menu2.printMenuInfo();
+                        menu3.printMenuInfo();
+                        menu4.printMenuInfo();
+                        System.out.println(" ");
+
+                        System.out.println("Please enter the menu ID # you would like to order: ");
+                        int menuId = input.nextInt();
+
+                        System.out.println("Enter the quantity: ");
+                        int qty = input.nextInt();
+                        ord.setQuantity(qty);
+
+
+                        oList.add(ord.order());
+
+                        switch (menuId) {
+                            case 1:
+                                subTotal = ord.getSubtotal(menu1.getPrice(), qty);
+                                orderTotal = orderTotal + subTotal;
+                                ord.printOrder(menu1.getMenuItem(), menu1.getPrice(), qty, subTotal);
+                                userAction = getAction(userInput);
+                                break;
+                            case 2:
+                                subTotal = ord.getSubtotal(menu2.getPrice(), qty);
+                                orderTotal = orderTotal + subTotal;
+                                ord.printOrder(menu2.getMenuItem(), menu2.getPrice(), qty, subTotal);
+                                userAction = getAction(userInput);
+                                break;
+                            case 3:
+                                subTotal = ord.getSubtotal(menu3.getPrice(), qty);
+                                orderTotal = orderTotal + subTotal;
+                                ord.printOrder(menu3.getMenuItem(), menu3.getPrice(), qty, subTotal);
+                                userAction = getAction(userInput);
+                                break;
+                            case 4:
+                                subTotal = ord.getSubtotal(menu4.getPrice(), qty);
+                                orderTotal = orderTotal + subTotal;
+                                ord.printOrder(menu4.getMenuItem(), menu4.getPrice(), qty, subTotal);
+                                userAction = getAction(userInput);
+                                break;
+                            default:
+                                System.out.println("Error.");
+                                break;
+                        }
+                    }
+                    break;
+                case TRAN_CODE:
+                    Transaction trans1 = new Transaction(1);
+                    tList.add(trans1);
+
+
+                    trans1.setPaymentType(trans1.selectPayType());
+
+                    System.out.println("---- Gregg's Pizza Shop ----");
+                    System.out.println("     1600 Woodland Road     ");
+                    System.out.println("     Abington, PA 19001     ");
+                    System.out.println("        215-555-1212        ");
+                    System.out.println("       -- RECEIPT --        ");
+
+                    trans1.listTransactions(tList);
+
+                    System.out.printf("%-10s | %-12s | %-10s\n", "ID", "Name", "Phone Number");
+                    Customer.printCustomer(cList);
+
+
+                    Order.listOrderDetails(oList);
+
+
+                    trans1.printReceipt(orderTotal, trans1.getPaymentType());
+
+                    break;
+                case HELP_CODE:
+                    break;
+                case EXIT_CODE:
+                    break;
+                default:
+                    System.out.println("Error");
+                    break;
+
+            }
+            userAction = getAction(PROMPT_ACTION);
+        }
+    }
+
+
+
+    public static char getAction (String prompt){
+        Scanner scnr = new Scanner(System.in);
+        String answer = "";
+        System.out.println(prompt);
+        answer = scnr.nextLine().toUpperCase() + " ";
+        char firstChar = answer.charAt(0);
+        return firstChar;
+    }
+
+
+    public Customer addCustomer () {
+        Customer cust = new Customer(cCount++);
+        Scanner scnr = new Scanner(System.in);
+        System.out.println("Please Enter your Name: ");
+        cust.setCustomerName(scnr.nextLine());
+        System.out.println("Please Enter your Phone: ");
+        cust.setCustomerPhoneNumber(scnr.nextLine());
+        return cust;
+    }
+
+
+
+
+
+
+}
